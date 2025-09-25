@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { type Me } from '@/modules/profile/api/getMe';
-import { authed } from '@/assets/lib/api';
+import { updateProfile, type User } from '@/lib/api';
 
 interface ProfileSectionProps {
-  user: Me | null;
+  user: User | null;
   onUserUpdate: () => void;
 }
 
@@ -20,18 +19,15 @@ export default function ProfileSection({ user, onUserUpdate }: ProfileSectionPro
 
     const formData = new FormData(e.currentTarget);
     const data = {
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      middle_name: formData.get('middle_name'),
-      email: formData.get('email'),
-      birth_date: formData.get('birth_date'),
+      first_name: formData.get('first_name') as string,
+      last_name: formData.get('last_name') as string,
+      middle_name: formData.get('middle_name') as string,
+      email: formData.get('email') as string,
+      birth_date: formData.get('birth_date') as string,
     };
 
     try {
-      await authed('/users/update_profile/', {
-        method: 'PATCH',
-        json: data,
-      });
+      await updateProfile(data);
       setSuccess('Профиль успешно обновлен');
       onUserUpdate();
     } catch (err: any) {
@@ -102,7 +98,7 @@ export default function ProfileSection({ user, onUserUpdate }: ProfileSectionPro
             />
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Сохранение...' : 'Сохранить'}
           </button>
         </form>

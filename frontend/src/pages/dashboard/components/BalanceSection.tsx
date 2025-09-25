@@ -1,20 +1,8 @@
 import { useState, useEffect } from 'react';
-import { type Me } from '@/modules/profile/api/getMe';
-import { authed } from '@/assets/lib/api';
+import { getBalance, topupBalance, type User, type BalanceResponse } from '@/lib/api';
 
 interface BalanceSectionProps {
-  user: Me | null;
-}
-
-interface BalanceData {
-  balance: string;
-}
-
-interface TopupResponse {
-  success?: boolean;
-  message?: string;
-  requires_3ds?: boolean;
-  redirect_url?: string;
+  user: User | null;
 }
 
 export default function BalanceSection({ user }: BalanceSectionProps) {
@@ -30,7 +18,7 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
 
   const loadBalance = async () => {
     try {
-      const balanceData = await authed<BalanceData>('/users/balance/');
+      const balanceData = await getBalance();
       setBalance(balanceData.balance);
     } catch (err: any) {
       console.error('Error loading balance:', err);
@@ -45,10 +33,7 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
     setLoading(true);
 
     try {
-      const result = await authed('/payments/topup/', {
-        method: 'POST',
-        json: { amount: parseInt(topupAmount) },
-      });
+      const result = await topupBalance(parseInt(topupAmount));
 
       if (result.requires_3ds && result.redirect_url) {
         window.open(result.redirect_url, '_blank');
@@ -125,7 +110,7 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
             </button>
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Обработка...' : 'Пополнить'}
           </button>
         </form>

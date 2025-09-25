@@ -1,17 +1,5 @@
 import { useState, useEffect } from 'react';
-import { authed } from '@/assets/lib/api';
-
-interface Card {
-  id: number;
-  masked_number: string;
-  card_type: string;
-  bank_name: string;
-  expiry_month: string;
-  expiry_year: string;
-  is_default: boolean;
-  is_active: boolean;
-  is_expired: boolean;
-}
+import { getPaymentMethods, addCard, setDefaultCard, deactivateCard, type Card } from '@/lib/api';
 
 export default function CardsSection() {
   const [cards, setCards] = useState<Card[]>([]);
@@ -26,7 +14,7 @@ export default function CardsSection() {
   const loadCards = async () => {
     try {
       setLoading(true);
-      const response = await authed<{ results?: Card[] } | Card[]>('/payments/methods/');
+      const response = await getPaymentMethods();
       const cardsData = Array.isArray(response) ? response : response.results || [];
       setCards(cardsData);
     } catch (err: any) {
@@ -38,9 +26,7 @@ export default function CardsSection() {
 
   const addNewCard = async () => {
     try {
-      const result = await authed<{ redirect_url?: string }>('/payments/methods/add_card/', { 
-        method: 'POST' 
-      });
+      const result = await addCard();
       
       if (result.redirect_url) {
         const cardWindow = window.open(result.redirect_url, '_blank', 'width=800,height=600');
@@ -63,9 +49,9 @@ export default function CardsSection() {
     }
   };
 
-  const setDefaultCard = async (cardId: number) => {
+  const setDefault = async (cardId: number) => {
     try {
-      await authed(`/payments/methods/${cardId}/set_default/`, { method: 'POST' });
+      await setDefaultCard(cardId);
       setSuccess('Карта установлена как основная');
       loadCards();
     } catch (err: any) {
@@ -77,7 +63,7 @@ export default function CardsSection() {
     if (!confirm('Вы уверены, что хотите удалить эту карту?')) return;
     
     try {
-      await authed(`/payments/methods/${cardId}/deactivate/`, { method: 'POST' });
+      await deactivateCard(cardId);
       loadCards();
     } catch (err: any) {
       setError(err.message);
@@ -97,7 +83,7 @@ export default function CardsSection() {
       <div className="section-card">
         <div className="cards-header">
           <h2>Мои карты</h2>
-          <button className="btn-primary" onClick={addNewCard}>
+          <button className="btn btn-primary" onClick={addNewCard}>
             + Добавить
           </button>
         </div>
@@ -108,7 +94,7 @@ export default function CardsSection() {
         {cards.length === 0 ? (
           <div className="empty-cards">
             <p>У вас нет привязанных карт</p>
-            <button className="btn-primary" onClick={addNewCard}>
+            <button className="btn btn-primary" onClick={addNewCard}>
               Привязать первую карту
             </button>
           </div>
@@ -134,14 +120,14 @@ export default function CardsSection() {
                 <div className="card-actions">
                   {!card.is_default && (
                     <button 
-                      className="btn-secondary btn-sm"
-                      onClick={() => setDefaultCard(card.id)}
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setDefault(card.id)}
                     >
                       Сделать основной
                     </button>
                   )}
                   <button 
-                    className="btn-danger btn-sm"
+                    className="btn btn-danger btn-sm"
                     onClick={() => removeCard(card.id)}
                   >
                     Удалить

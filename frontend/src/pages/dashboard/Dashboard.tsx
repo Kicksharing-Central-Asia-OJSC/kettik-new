@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMe, type Me } from '@/modules/profile/api/getMe';
-import { clearToken } from '@/assets/lib/api';
+import { getMe, clearToken, type User } from '@/lib/api';
 import Navigation from './components/Navigation';
 import ProfileSection from './components/ProfileSection';
 import BalanceSection from './components/BalanceSection';
@@ -12,7 +11,7 @@ type TabType = 'profile' | 'balance' | 'cards';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('profile');
-  const [user, setUser] = useState<Me | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
