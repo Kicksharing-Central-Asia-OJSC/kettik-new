@@ -10,6 +10,13 @@ interface BalanceData {
   balance: string;
 }
 
+interface TopupResponse {
+  success?: boolean;
+  message?: string;
+  requires_3ds?: boolean;
+  redirect_url?: string;
+}
+
 export default function BalanceSection({ user }: BalanceSectionProps) {
   const [balance, setBalance] = useState<string>(user?.balance || '0');
   const [topupAmount, setTopupAmount] = useState('1000');
