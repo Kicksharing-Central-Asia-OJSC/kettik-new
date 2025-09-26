@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getBalance, topupBalance, type User, type BalanceResponse } from '@/lib/api';
+import { getBalance, topupBalance, type User } from '@/lib/api';
 
 interface BalanceSectionProps {
   user: User | null;
@@ -117,4 +117,4 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
       </div>
     </div>
   );
-}
+}   
