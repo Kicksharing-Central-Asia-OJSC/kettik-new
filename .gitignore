@@ -1,0 +1,44 @@
+# ===== PYTHON =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# ===== NODE =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ===== SECRETS (ВАЖНО!) =====
+server/.env
+frontend/.env
+.env
+.env.local
+.env.*.local
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ===== BUILD =====
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# ===== LOGS =====
+logs/
+*.log

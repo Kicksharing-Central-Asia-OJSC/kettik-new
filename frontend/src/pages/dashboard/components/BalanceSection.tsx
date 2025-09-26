@@ -5,6 +5,16 @@ interface BalanceSectionProps {
   user: User | null;
 }
 
+// ✅ Функция для правильного форматирования баланса
+const formatBalance = (balance: string): string => {
+  const num = parseFloat(balance);
+  if (isNaN(num)) return '0';
+  return new Intl.NumberFormat('ru-RU', { 
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2 
+  }).format(num);
+};
+
 export default function BalanceSection({ user }: BalanceSectionProps) {
   const [balance, setBalance] = useState<string>(user?.balance || '0');
   const [topupAmount, setTopupAmount] = useState('1000');
@@ -62,7 +72,8 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
             ↻
           </button>
         </div>
-        <div className="balance-amount">{parseFloat(balance).toLocaleString()} ₸</div>
+        {/* ✅ Используем функцию форматирования */}
+        <div className="balance-amount">{formatBalance(balance)} ₸</div>
       </div>
 
       <div className="section-card">
@@ -117,4 +128,4 @@ export default function BalanceSection({ user }: BalanceSectionProps) {
       </div>
     </div>
   );
-}   
+}

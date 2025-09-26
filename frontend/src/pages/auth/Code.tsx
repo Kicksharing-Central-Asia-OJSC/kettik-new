@@ -26,8 +26,8 @@ export default function Code() {
   }
 
   return (
-    <div className="container" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="card" style={{ maxWidth: 420, width: '100%' }}>
+    <div className="auth-page">
+      <div className="auth-card">
         <h1>Введите код</h1>
         <p className="text-muted">Код отправлен на номер: {phone}</p>
         
@@ -41,12 +41,18 @@ export default function Code() {
               value={code}
               onChange={(e) => setCode(e.target.value.trim())}
               maxLength={6}
+              autoFocus
             />
           </div>
           
           {err && <div className="error-message">{err}</div>}
           
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%' }}>
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            disabled={loading}
+            style={{ width: '100%' }}
+          >
             {loading ? "Проверка..." : "Войти"}
           </button>
         </form>
